@@ -1,24 +1,38 @@
 import { useState, useEffect } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
-import axios from "axios";
 import "./App.css";
 
 function App() {
-  const [avatars, setavatars] = useState([]);
-  const fetchData = async () => {
-    const rs = await axios.get("http://localhost:3000/api/data");
-    setavatars(rs.data);
-  };
+  const [avatars, setAvatars] = useState([]);
 
   useEffect(() => {
-    fetchData();
+    const fetchAvatars = async () => {
+      try {
+        const response = await fetch(
+          "https://fetchavatar-xhceranm2a-uc.a.run.app",
+          {
+            mode: "cors",
+          }
+        );
+        const data = await response.json();
+        if (data) {
+          setAvatars(data);
+        } else {
+          throw new Error("Data is empty");
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchAvatars();
   }, []);
-  console.log(avatars);
+
   return (
-    <div>
+    <div className="box">
       {avatars.map((item) => (
-        <div className="contriner">{item.name}</div>
+        <div className="container">
+          <p>{item.name}</p>
+        </div>
       ))}
     </div>
   );
