@@ -1,41 +1,44 @@
-import { useState, useEffect } from "react";
-import "./App.css";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 
-function App() {
-  const [avatars, setAvatars] = useState([]);
+function AvatarList() {
+  const [avatarData, setAvatarData] = useState([]);
 
   useEffect(() => {
-    const fetchAvatars = async () => {
+    async function fetchAvatarData() {
       try {
-        const response = await fetch(
-          "https://fetchavatar-xhceranm2a-uc.a.run.app",
-          {
-            mode: "cors",
-          }
+        const response = await axios.get(
+          "https://fetchavatar-xhceranm2a-uc.a.run.app"
         );
-        const data = await response.json();
-        if (data) {
-          setAvatars(data);
-        } else {
-          throw new Error("Data is empty");
-        }
+        setAvatarData(response.data);
+        console.log(response.data);
       } catch (error) {
-        console.error("Error fetching data:", error);
+        console.error("Error fetching avatar data:", error);
       }
-    };
+    }
 
-    fetchAvatars();
+    fetchAvatarData();
   }, []);
 
   return (
-    <div className="box">
-      {avatars.map((item) => (
-        <div className="container">
-          <p>{item.name}</p>
+    <div className="contrainer">
+      {avatarData.map((avatar) => (
+        <div className="box" key={avatar.id}>
+          <h2>{avatar.name}</h2>
+          <ul>
+            {avatar.evolution.map((evo) => (
+              <div className="card">
+                <li key={evo.id}>
+                  {evo.name} - Level {evo.level}
+                </li>
+                Price - {evo.price}$
+              </div>
+            ))}
+          </ul>
         </div>
       ))}
     </div>
   );
 }
 
-export default App;
+export default AvatarList;
